@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chat-page</title>
+    <link rel="stylesheet" href="/chat-page/chat-page.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"
+      integrity="sha512-11t8Q+vY9JlCrr+PveZKTYJq8n7O09Y5X/pk/aMd3vJugSvu4xOunGEUzaADqL3I8cZKE/pBwwCfXzDkRJh2sQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script defer src="/chat-page/chat-page-script.js"></script>
+  </head>
+  <body>
+    <div id="menu-bar">
+      <div class="logo">
+        <img src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167791/ChatApp/1000020883-removebg-preview_l811o2.png" />
+      </div>
+      <div class="user">
+        <img id="profile-image" src="" />
+        <select id="profile-pic">
+          <option value="1">Default</option>
+          <option value="2">Male</option>
+          <option value="3">Female</option>
+        </select>
+        <p><%= curr_user.name %></p>
+      </div>
+    </div>
+    <div class="chat-section">
+      <div class="chatting-portion">
+        <div class="group-menu">
+          <div class="room-id"><%= roomName %></div>
+          <div>
+            <a href="/logout">
+              <button type="submit" id="exit" class="logoutButton">
+                Logout
+              </button>
+            </a>
+          </div>
+        </div>
+        <div class="below">
+          <div class="chat-area">
+            <div id="activity-head">
+              <hr />
+              <div
+                id="activity"
+                style="color: aliceblue; padding: 10px 0"
+              ></div>
+              <hr />
+            </div>
+            <div class="chats"></div>
+            <div class="send-message">
+              <form id="messageForm" class="background">
+                <input
+                  type="text"
+                  class="inputMessage"
+                  id="send-mssg"
+                  placeholder="Wrtie a message"
+                />
+                <button type="submit">
+                  <img src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167793/ChatApp/send_y0dehx.png" alt="" />
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="member-list">
+            <h2 id="number_of_members">Member: XX</h2>
+            <div class="members">
+              <ol type="1"></ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../chat-page/profile-pic-selector.js"></script>
+  </body>
+</html>
