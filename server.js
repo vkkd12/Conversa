@@ -10,6 +10,7 @@ import middleware from "./middleware.js";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
 
 const PORT = process.env.PORT || 3500;
 const app = express();
@@ -18,25 +19,36 @@ const expressServer = app.listen(PORT, () => {
   console.log(`Server ${PORT} is running...`);
 });
 
-///// mongoDB
+///// CloudMongo
 import User from "./models/User.js";
 import mongoose from "mongoose";
 mongoose
-  .connect("mongodb://127.0.0.1:27017/college_chat")
-  .then(() => console.log("connected to MongoDB"))
-  .catch((err) => console.log("error occured"));
+  .connect(process.env.dbURL)
+  .then(console.log("connected to DB"))
+  .catch((err) => console.log(err));
 
 ///// use
+const store = MongoStore.create({
+  mongoUrl: process.env.dbURL,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 60 * 60,
+});
+
+store.on("error", () => {
+  console.log("error in Mongo Session Store");
+});
+
 let sessionOptions = {
+  store,
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    // secure: true,
     expires: Date.now() + 60 * 60,
     maxAge: 60 * 60,
     httpOnly: true,
-    // sameSite: "strict",
   },
 };
 app.use(express.urlencoded({ extended: true }));
@@ -163,7 +175,6 @@ app.get("/failure", (req, res) => {
 });
 
 app.get("*", (err, req, res, next) => {
-  // res.status(404).send("Page not found");
   res.redirect("/");
 });
 
