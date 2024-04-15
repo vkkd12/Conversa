@@ -1,4 +1,4 @@
-const socket = io("https://chatacademia.onrender.com");
+const socket = io("https://conversa-h9s7.onrender.com");
 
 window.onload = () => {
   socket.emit("public");
