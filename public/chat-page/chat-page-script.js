@@ -1,4 +1,4 @@
-const socket = io("ws://localhost:3500");
+const socket = io("https://localhost:3500");
 
 window.onload = () => {
   socket.emit("public");
