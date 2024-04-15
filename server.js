@@ -125,7 +125,6 @@ app.post("/register", async (req, res) => {
     } else {
       let user_login = new User({ name, email });
       let registered_user = await User.register(user_login, password);
-      console.log(registered_user);
       req.logIn(registered_user, (err) => {
         if (err) {
           console.log(err);
@@ -258,10 +257,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("members", () => {
-      // console.log("1 : ", socket.id);
-      // console.log("2 : ", Users);
       let curr_user = Users[getUser(socket.id)];
-      // console.log("members : ", curr_user);
       if (curr_user) {
         let names = getAllNames(socket.id);
         setTimeout(() => {
