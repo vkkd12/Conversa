@@ -12,7 +12,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 
-const PORT = process.env.PORT || 3500;
+const PORT = 3500;
 const app = express();
 
 const expressServer = app.listen(PORT, () => {
