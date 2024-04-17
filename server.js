@@ -46,7 +46,7 @@ let sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: Date.now() + 60 * 60,
+    expires: Date.now() + 60 * 60 * 1000,
     maxAge: 60 * 60,
     httpOnly: true,
   },
