@@ -46,11 +46,12 @@ let sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: Date.now() + 60 * 60 * 1000,
-    maxAge: 60 * 60,
+    expires: new Date(Date.now() + 60 * 60 * 1000 + (5.5 * 60 * 60 * 1000)), // Add 5.5 hours for IST (UTC+5:30)
+    maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
     httpOnly: true,
   },
 };
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.SECRET));
