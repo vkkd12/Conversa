@@ -85,18 +85,21 @@ passport.use(
 );
 
 // Serialize and deserialize user to store/retrieve from session
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id)
-    .then(user => {
-      done(null, user); // Pass the retrieved user to the callback
-    })
-    .catch(err => {
-      done(err); // Pass any error to the callback
-    });
+passport.deserializeUser(() => {
+  User.findOne({ EMAIL })
+  .then(user => {
+    if (user) {
+      // User found, handle the result here
+      console.log(user);
+    } else {
+      // User not found
+      console.log('User not found');
+    }
+  })
+  .catch(err => {
+    // Handle any errors
+    console.error('Error finding user by email:', err);
+  });
 });
 
 // OLD ////////////
