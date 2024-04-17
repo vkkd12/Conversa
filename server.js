@@ -62,17 +62,51 @@ app.use(session(sessionOptions));
 // import authentication file
 app.use(passport.initialize());
 app.use(passport.session());
+
+///////// NEW /////////
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email", // replace 'email' with the name of your username field
-      passwordField: "password", // replace 'password' with the name of your password field
+      usernameField: "email",
+      passwordField: "password",
     },
-    User.authenticate()
+    async (email, password, done) => {
+      try {
+        const user = await User.findOne({ email });
+        if (!user || !user.isValidPassword(password)) {
+          return done(null, false, { message: "Invalid email or password" });
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
   )
 );
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
+// Serialize and deserialize user to store/retrieve from session
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
+
+// OLD ////////////
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "email", // replace 'email' with the name of your username field
+//       passwordField: "password", // replace 'password' with the name of your password field
+//     },
+//     User.authenticate()
+//   )
+// );
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 ///// set
 
