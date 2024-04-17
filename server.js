@@ -46,7 +46,7 @@ let sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: new Date(Date.now() + 60 * 60 * 1000 + (5.5 * 60 * 60 * 1000)), // Add 5.5 hours for IST (UTC+5:30)
+    expires: new Date(Date.now() + 60 * 60 * 1000 + 5.5 * 60 * 60 * 1000), // Add 5.5 hours for IST (UTC+5:30)
     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
     httpOnly: true,
   },
@@ -182,7 +182,7 @@ app.get("*", (err, req, res, next) => {
 
 const io = new Server(expressServer, {
   cors: {
-    origin: ["http://localhost:5500", "http://127.0.0.1:5500"],
+    origin: ["https://conversa-h9s7.onrender.com"],
   },
 });
 
