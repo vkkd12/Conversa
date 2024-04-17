@@ -1,7 +1,8 @@
 const socket = io("https://conversa-h9s7.onrender.com");
 
+const USERNAME = document.querySelector("#USERNAME").innerText;
 window.onload = () => {
-  socket.emit("public");
+  socket.emit("public", USERNAME);
   socket.emit("members");
 };
 
@@ -148,7 +149,10 @@ socket.on("messageForOther", (name, data) => {
 
     parentDiv.append(div);
 
-    parentDiv.scrollTop = parentDiv.scrollHeight;
+    parentDiv.scrollTo({
+      top: parentDiv.scrollHeight,
+      behavior: "smooth"
+    });
   } else {
     console.log("parentDiv not found");
   }

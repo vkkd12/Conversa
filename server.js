@@ -86,7 +86,6 @@ app.get("/", (req, res) => {
   res.render("../public/front-page/Front-Home.ejs");
 });
 
-var EMAIL = "";
 // Login
 app.get("/login", (req, res) => {
   res.render("login.ejs");
@@ -107,7 +106,6 @@ app.post("/login", (req, res, next) => {
         console.error(err);
         return next(err);
       }
-      EMAIL = user.email;
       return res.redirect("/room");
     });
   })(req, res, next);
@@ -121,7 +119,6 @@ app.get("/register", (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     let { name, email, password } = req.body;
-    EMAIL = email;
     let user_already_exists = await User.findOne({ email });
     if (user_already_exists) {
       res.redirect("/login");
@@ -153,7 +150,7 @@ app.post("/room", middleware.isLoggedIn, (req, res) => {
 });
 
 app.get("/chattings", middleware.isLoggedIn, async (req, res) => {
-  const curr_user = await User.findOne({ email: EMAIL });
+  const curr_user = await User.findOne({ email: req.user.email });
   res.render("../public/chat-page/chat-page.ejs", {
     curr_user,
     roomName: req.session.room,
@@ -161,15 +158,13 @@ app.get("/chattings", middleware.isLoggedIn, async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  setTimeout(() => {
-    req.logout((err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      res.redirect("/");
-    });
-  }, 1000);
+  req.logout((err) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.redirect("/");
+  });
 });
 
 app.get("/failure", (req, res) => {
@@ -193,17 +188,16 @@ io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected`);
 
     // Public and creating user
-    socket.on("public", async () => {
+    socket.on("public", async (USERNAME) => {
       let tempRoom = ROOM ? ROOM : "public";
       socket.join(tempRoom);
-      const curr_user = await User.findOne({ email: EMAIL });
-      let user = { id: socket.id, name: curr_user.name, room: tempRoom };
+      let user = { id: socket.id, name: USERNAME, room: tempRoom };
       Users.push(user);
 
       // Only Others
       socket.broadcast
         .to(tempRoom)
-        .emit("messageForOther", `${curr_user.name} has connected`);
+        .emit("messageForOther", `${USERNAME} has connected`);
 
       // Only to user
       socket.emit("ourMessage", null, `Welcome!! to Chat App`);
@@ -256,7 +250,7 @@ io.on("connection", (socket) => {
     socket.on("limit", () => {
       setTimeout(() => {
         socket.emit("limit");
-      }, 2 * 1000);
+      }, 1 * 1000);
     });
 
     socket.on("members", () => {
