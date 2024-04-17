@@ -44,8 +44,10 @@ let sessionOptions = {
   store,
   secret: process.env.SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
+    secure: true,
+    sameSite: "strict",
     expires: new Date(Date.now() + 60 * 60 * 1000 + 5.5 * 60 * 60 * 1000), // Add 5.5 hours for IST (UTC+5:30)
     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
     httpOnly: true,
