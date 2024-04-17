@@ -46,7 +46,7 @@ let sessionOptions = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-    // secure: true,
+    secure: true,
     sameSite: "strict",
     expires: new Date(Date.now() + 60 * 60 * 1000 + 5.5 * 60 * 60 * 1000), // Add 5.5 hours for IST (UTC+5:30)
     maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
@@ -62,58 +62,17 @@ app.use(session(sessionOptions));
 // import authentication file
 app.use(passport.initialize());
 app.use(passport.session());
-
-///////// NEW /////////
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
-      passwordField: "password",
+      usernameField: "email", // replace 'email' with the name of your username field
+      passwordField: "password", // replace 'password' with the name of your password field
     },
-    async (email, password, done) => {
-      try {
-        const user = await User.findOne({ email });
-        if (!user || !user.isValidPassword(password)) {
-          return done(null, false, { message: "Invalid email or password" });
-        }
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
+    User.authenticate()
   )
 );
-
-// Serialize and deserialize user to store/retrieve from session
-passport.deserializeUser(() => {
-  User.findOne({ EMAIL })
-  .then(user => {
-    if (user) {
-      // User found, handle the result here
-      console.log(user);
-    } else {
-      // User not found
-      console.log('User not found');
-    }
-  })
-  .catch(err => {
-    // Handle any errors
-    console.error('Error finding user by email:', err);
-  });
-});
-
-// OLD ////////////
-// passport.use(
-//   new LocalStrategy(
-//     {
-//       usernameField: "email", // replace 'email' with the name of your username field
-//       passwordField: "password", // replace 'password' with the name of your password field
-//     },
-//     User.authenticate()
-//   )
-// );
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 ///// set
 
