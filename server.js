@@ -249,7 +249,7 @@ io.on("connection", (socket) => {
     socket.on("limit", () => {
       setTimeout(() => {
         socket.emit("limit");
-      }, 1 * 1000);
+      }, 2 * 1000);
     });
 
     socket.on("members", () => {
