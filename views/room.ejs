@@ -4,12 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="login.css" />
   </head>
   <body>
-    <form action="/room" method="post" id="roomForm">
-      <input type="text" name="room" id="roomInput" />
-      <button>Join</button>
-    </form>
-    <div><button><a href="/logout">Logout</a></button></div>
+    <div class="wrapper">
+      <form action="/room" method="post" id="roomForm">
+        <div class="input-box">
+          <input
+            type="text"
+            name="room"
+            id="roomInput"
+            placeholder="Room Name"
+          />
+        </div>
+        <button class="btn">Join</button>
+      </form>
+      <div>
+        <br />
+        <button class="btn" style="background-color: red">
+          <a style="color: white; text-decoration: none" href="/logout"
+            >Logout</a
+          >
+        </button>
+      </div>
+    </div>
   </body>
 </html>

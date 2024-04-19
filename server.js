@@ -64,8 +64,8 @@ app.use(passport.session());
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email", // replace 'email' with the name of your username field
-      passwordField: "password", // replace 'password' with the name of your password field
+      usernameField: "email",
+      passwordField: "password",
     },
     User.authenticate()
   )
@@ -87,7 +87,11 @@ app.get("/", (req, res) => {
 
 // Login
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  if (req.isAuthenticated()) {
+    res.redirect("/chattings");
+  } else {
+    res.render("login.ejs");
+  }
 });
 
 app.post("/login", (req, res, next) => {
@@ -157,13 +161,15 @@ app.get("/chattings", middleware.isLoggedIn, async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    res.redirect("/");
-  });
+  if (req.user) {
+    req.logout((err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  }
+  res.redirect("/");
 });
 
 app.get("/failure", (req, res) => {
@@ -184,7 +190,6 @@ const io = new Server(expressServer, {
 
 io.on("connection", (socket) => {
   if (socket.id) {
-    console.log(`User ${socket.id} connected`);
 
     // Public and creating user
     socket.on("public", async (USERNAME) => {
@@ -232,17 +237,20 @@ io.on("connection", (socket) => {
 
     // Leave Room
     socket.on("leave", () => {
-      let username = Users[getUser(socket.id)].name;
-      let room = Users[getUser(socket.id)].room;
-      let names = getAllNames(socket.id);
-      names.filter((name) => {
-        if (name !== username) return name;
-      });
+      let user = Users[getUser(socket.id)];
+      if (user) {
+        let username = user.name;
+        let room = user.room;
+        let names = getAllNames(socket.id);
+        names.filter((name) => {
+          if (name !== username) return name;
+        });
 
-      removeUser(socket.id);
+        removeUser(socket.id);
 
-      socket.leave(room);
-      socket.broadcast.to(room).emit("members", names);
+        socket.leave(room);
+        socket.broadcast.to(room).emit("members", names);
+      }
     });
 
     // Rate Limiting
