@@ -135,8 +135,7 @@ socket.on("messageForOther", (name, data) => {
     div.setAttribute("class", "recieved-mssg");
     if (data) {
       div.innerHTML = `
-      <h2>${name}</h2>
-      <hr />
+      <h3>${name}</h3>
         <p>
           ${data}
         </p>
