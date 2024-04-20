@@ -1,5 +1,3 @@
-import User from "./models/User.js";
-
 const isLoggedIn = async (req, res, next) => {
   if (req.isAuthenticated()) {
     let { email } = req.user;

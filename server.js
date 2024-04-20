@@ -11,6 +11,12 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
+import ID from "./models/init.js";
+var DEFAULT_ROOM_ID = "";
+async function logID() {
+  DEFAULT_ROOM_ID = await ID.id;
+}
+logID();
 
 const PORT = 3500;
 const app = express();
@@ -20,6 +26,7 @@ const expressServer = app.listen(PORT, () => {
 });
 
 ///// CloudMongo
+import Room from "./models/Room.js";
 import User from "./models/User.js";
 import mongoose from "mongoose";
 mongoose
@@ -96,20 +103,34 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      console.error(err);
-      return next(err);
-    }
-    if (!user) {
-      console.log(info);
-      return res.redirect("/login");
-    }
+    if (err) return next(err);
+    if (!user) return res.redirect("/login");
     req.logIn(user, (err) => {
       if (err) {
-        console.error(err);
         return next(err);
       }
-      return res.redirect("/room");
+      async function helper() {
+        let user = await User.findOne({ email: req.user.email }).populate(
+          "roomJoin"
+        );
+
+        if (user.roomJoin) {
+          let room = await Room.findById(user.roomJoin.id);
+          if (room) {
+            return res.redirect(
+              room.name !== "public" ? "/chattings" : "/room"
+            );
+          }
+        }
+
+        async function setDefaultRoomAndLogout() {
+          user.roomJoin = DEFAULT_ROOM_ID;
+          await user.save();
+          return res.redirect("/room");
+        }
+        setDefaultRoomAndLogout();
+      }
+      helper();
     });
   })(req, res, next);
 });
@@ -142,22 +163,79 @@ app.post("/register", async (req, res) => {
 });
 
 let ROOM = "";
-app.get("/room", (req, res) => {
+app.get("/room", middleware.isLoggedIn, (req, res) => {
   res.render("room.ejs");
 });
 
-app.post("/room", middleware.isLoggedIn, (req, res) => {
-  ROOM = req.body.room;
-  req.session.room = ROOM;
+/// Join Room
+app.post("/roomJoin", middleware.isLoggedIn, async (req, res) => {
+  ROOM = req.body.roomID;
+  try {
+    let roomToJoin = await Room.findById(req.body.roomID);
+    if (roomToJoin.password === req.body.join_password) {
+      roomToJoin.members += 1;
+      await roomToJoin.save();
+
+      let user = await User.findOne({ email: req.user.email });
+      user.roomJoin = roomToJoin._id;
+      await user.save();
+
+      res.redirect("/chattings");
+    } else {
+      res.redirect("/room");
+    }
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+// Create Room
+app.post("/roomCreate", middleware.isLoggedIn, async (req, res) => {
+  let { roomName, password } = req.body;
+  let newRoom = new Room({ name: roomName, password, members: 1 });
+  await newRoom.save();
+
+  let user = await User.findOne({ email: req.user.email });
+  user.roomJoin = newRoom._id;
+  await user.save();
+
+  ROOM = newRoom._id;
   res.redirect("/chattings");
 });
 
 app.get("/chattings", middleware.isLoggedIn, async (req, res) => {
-  const curr_user = await User.findOne({ email: req.user.email });
-  res.render("../public/chat-page/chat-page.ejs", {
-    curr_user,
-    roomName: req.session.room,
-  });
+  let curr_user = await User.findOne({ email: req.user.email });
+
+  if (curr_user) {
+    curr_user = await curr_user.populate("roomJoin");
+    let room = curr_user.roomJoin;
+    const ROOMNAME = room.name;
+    res.render("../public/chat-page/chat-page.ejs", {
+      curr_user,
+      ROOMNAME,
+    });
+  } else {
+    res.send("Error 404");
+  }
+});
+
+app.get("/leaveRoom/:ID", middleware.isLoggedIn, async (req, res) => {
+  let { ID } = req.params;
+  let user = await User.findById(ID);
+  let roomID = user.roomJoin;
+  user.roomJoin = DEFAULT_ROOM_ID; //  this id is for public chat group;
+  await user.save();
+
+  let roomToLeave = await Room.findById(roomID);
+  // minus because one person just left the group
+  if (roomToLeave.members - 1 <= 0) {
+    await Room.findByIdAndDelete(roomID);
+  } else {
+    roomToLeave.members -= 1;
+    await roomToLeave.save();
+  }
+
+  res.redirect("/room");
 });
 
 app.get("/logout", (req, res) => {
@@ -169,7 +247,7 @@ app.get("/logout", (req, res) => {
       }
     });
   }
-  res.redirect("/");
+  res.redirect("/failure");
 });
 
 app.get("/failure", (req, res) => {
@@ -180,17 +258,21 @@ app.get("*", (err, req, res, next) => {
   res.redirect("/");
 });
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.redirect("/logout");
+});
+
 ///////////////////// Socket Server
 
 const io = new Server(expressServer, {
   cors: {
-    origin: ["https://conversa-h9s7.onrender.com"],
+    origin: ["http://localhost:3500", "http://127.0.0.1:3500"],
   },
 });
 
 io.on("connection", (socket) => {
   if (socket.id) {
-
     // Public and creating user
     socket.on("public", async (USERNAME) => {
       let tempRoom = ROOM ? ROOM : "public";
@@ -250,6 +332,7 @@ io.on("connection", (socket) => {
 
         socket.leave(room);
         socket.broadcast.to(room).emit("members", names);
+        io.to(room).emit("messageForOther", `${username} has disconnected`);
       }
     });
 

@@ -6,12 +6,22 @@ window.onload = () => {
   socket.emit("members");
 };
 
+//Leave Room
+const leaveRoom = document.querySelector("#exit");
+if (leaveRoom) {
+  leaveRoom.addEventListener("click", () => {
+    socket.emit("leave");
+  });
+}
+
 // Logout
 const logout = document.querySelector(".logoutButton");
 if (logout) {
-  logout.addEventListener("click", () => {
-    socket.emit("leave");
-  });
+  setTimeout(() => {
+    logout.addEventListener("click", () => {
+      socket.emit("leave");
+    });
+  }, 2000);
 }
 
 // Rate Limiting
@@ -72,7 +82,8 @@ socket.on("typing", (data, messageLength) => {
 
 // Listening for messages
 let parentDiv = document.getElementsByClassName("chats")[0];
-// Your Message
+
+// Our Message
 socket.on("ourMessage", (name, data) => {
   activity.innerHTML = "";
   let temp = `${name} is typing...`;
@@ -147,10 +158,9 @@ socket.on("messageForOther", (name, data) => {
     }
 
     parentDiv.append(div);
-
     parentDiv.scrollTo({
       top: parentDiv.scrollHeight,
-      behavior: "smooth"
+      behavior: "smooth",
     });
   } else {
     console.log("parentDiv not found");

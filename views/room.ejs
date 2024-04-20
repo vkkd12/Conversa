@@ -1,32 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html>
+  <head lang="en">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="login.css" />
+    <title>join-page</title>
+    <link rel="stylesheet" href="room-page/room-page-style.css" />
   </head>
   <body>
-    <div class="wrapper">
-      <form action="/room" method="post" id="roomForm">
-        <div class="input-box">
-          <input
-            type="text"
-            name="room"
-            id="roomInput"
-            placeholder="Room Name"
-          />
-        </div>
-        <button class="btn">Join</button>
-      </form>
-      <div>
-        <br />
-        <button class="btn" style="background-color: red">
-          <a style="color: white; text-decoration: none" href="/logout"
-            >Logout</a
-          >
-        </button>
+    <div id="menu-bar">
+      <div class="logo">
+        <img
+          src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167791/ChatApp/1000020883-removebg-preview_l811o2.png"
+        />
       </div>
+      <button type="submit">
+        <a href="/logout">Logout </a>
+      </button>
+    </div>
+    <div class="roomDiv">
+      <form
+        class="join-container"
+        action="/roomJoin"
+        method="post"
+        id="roomForm"
+      >
+        <div class="heading">Join Room</div>
+        <input
+          id="roomInput"
+          name="roomID"
+          type="text"
+          placeholder="Enter Room-ID"
+          required
+        />
+        <input
+          name="join_password"
+          type="password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Join</button>
+      </form>
+
+      <form
+        class="join-container"
+        action="/roomCreate"
+        method="post"
+        id="roomForm"
+      >
+        <div class="heading">Create Room</div>
+        <input
+          id="roomInput"
+          name="roomName"
+          type="text"
+          placeholder="Room Name"
+          required
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Set Password"
+          required
+        />
+        <button type="submit">Create</button>
+      </form>
     </div>
   </body>
 </html>

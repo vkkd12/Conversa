@@ -16,7 +16,9 @@
   <body>
     <div id="menu-bar">
       <div class="logo">
-        <img src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167791/ChatApp/1000020883-removebg-preview_l811o2.png" />
+        <img
+          src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167791/ChatApp/1000020883-removebg-preview_l811o2.png"
+        />
       </div>
       <div class="user">
         <img id="profile-image" src="" />
@@ -31,12 +33,13 @@
     <div class="chat-section">
       <div class="chatting-portion">
         <div class="group-menu">
-          <div class="room-id"><%= roomName %></div>
-          <div>
+          <div class="room-id"><%= ROOMNAME %></div>
+          <div class="BUTTON_DIV">
+            <a href="/leaveRoom/<%= curr_user.id %>">
+              <button type="submit" id="exit">Leave Room</button>
+            </a>
             <a href="/logout">
-              <button type="submit" id="exit" class="logoutButton">
-                Logout
-              </button>
+              <button type="submit" class="logoutButton">Logout</button>
             </a>
           </div>
         </div>
@@ -60,7 +63,10 @@
                   placeholder="Wrtie a message"
                 />
                 <button type="submit">
-                  <img src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167793/ChatApp/send_y0dehx.png" alt="" />
+                  <img
+                    src="https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167793/ChatApp/send_y0dehx.png"
+                    alt=""
+                  />
                 </button>
               </form>
             </div>
