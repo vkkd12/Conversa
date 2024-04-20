@@ -130,12 +130,27 @@ body {
 }
 
 .chat-section .chatting-portion .group-menu .room-id {
+    display: flex;
+    align-items: center;
     font-size: 30px;
     height: 40px;
     box-sizing: border-box;
     font-family: nugo-sans;
     color: white;
     font-weight: bold;
+    width: 80%;
+}
+
+.room-name {
+    margin: auto;
+    width: fit-content;
+}
+
+.ROOMID {
+    font-size: small;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .chat-section .chatting-portion .group-menu .members .background-selector input {

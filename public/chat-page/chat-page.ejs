@@ -33,7 +33,14 @@
     <div class="chat-section">
       <div class="chatting-portion">
         <div class="group-menu">
-          <div class="room-id"><%= ROOMNAME %></div>
+          <div class="room-id">
+            <div class="ROOMID">
+              <div>Room Id</div>
+              <div><%= curr_user.roomJoin._id %></div>
+            </div>
+
+            <div class="room-name"><%= ROOMNAME %></div>
+          </div>
           <div class="BUTTON_DIV">
             <a href="/leaveRoom/<%= curr_user.id %>">
               <button type="submit" id="exit">Leave Room</button>
