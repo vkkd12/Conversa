@@ -3,7 +3,7 @@ import Room from "./Room.js";
 
 main().catch((err) => console.log(err));
 async function main() {
-  await connect("mongodb://127.0.0.1:27017/college_chat");
+  await connect(process.env.dbURL);
 }
 
 async function settingDefaultRoom() {
