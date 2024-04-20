@@ -267,7 +267,7 @@ app.use((err, req, res, next) => {
 
 const io = new Server(expressServer, {
   cors: {
-    origin: ["http://localhost:3500", "http://127.0.0.1:3500"],
+    origin: ["https://conversa-h9s7.onrender.com"],
   },
 });
 
