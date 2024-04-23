@@ -17,7 +17,6 @@
     font-family: nugo-sans;
     src: url("/Font/NugoSansLight-9YzoK.ttf");
 }
-
 * {
     margin: 0;
     padding: 0;
@@ -28,6 +27,7 @@ body {
     background: rgba(18, 18, 18, 0.977);
     margin: 0;
     padding: 0;
+    overflow-y: hidden;
     height: 100vh;
 }
 
@@ -37,7 +37,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.781);
-    position: fixed;
+    position: static;
     width: 100%;
     height: 50px;
     border-radius: 5px;
@@ -95,20 +95,21 @@ body {
 .chat-section {
     display: flex;
     flex-direction: column;
+    height: 93%;
     width: 100%;
-    margin-bottom: 20px;
 }
 
 .chat-section .chatting-portion {
-    margin-top: 50px;
     margin-bottom: 0;
     border-radius: 10px;
     background-image: url('https://res.cloudinary.com/dh1ltpsm8/image/upload/v1713167818/ChatApp/Chat-Page_uklt1s.jpg');
-    background-size: contain;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-top-color: white;
     border-width: 2px;
     border-style: inset;
-    height: 92.8vh;
+    height: 100%;
     float: left;
 }
 
@@ -184,13 +185,14 @@ body {
 .chat-section .chatting-portion .below {
     display: flex;
     flex-direction: row;
-    height: 94%;
+    height: 91.4%;
 }
 
 .chat-section .chatting-portion .chat-area {
     display: flex;
     flex-direction: column;
     width: 85%;
+    height: 100%;
 }
 
 #activity {
@@ -207,11 +209,10 @@ body {
     text-align: center;
     font-family: sans-serif;
     width: 15%;
-    height: 98.3%;
+    height: 101%;
     font-weight: 200;
+    border-bottom-right-radius: 10px;
     font-size: small;
-    border-left-width: 3px;
-    border-left-style: solid;
     border: 1px solid white;
     border-right: none;
 }
@@ -278,21 +279,23 @@ body {
 
 .chat-section .chatting-portion .send-message {
     height: 60px;
+    width: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
     border-bottom-left-radius: 10px;
-    padding: 0 10px;
-    position: sticky;
-    bottom: 10px;
+    position:static;
 }
 
 .send-message .background {
     display: flex;
+    align-items: center;
     flex-direction: row;
+    position: static;
     justify-content: space-between;
     background-color: rgb(0, 132, 255);
     height: 40px;
-    width: 100%;
+    width: 97%;
     border-radius: 100px;
 }
 
@@ -305,8 +308,6 @@ body {
     height: 40px;
     font-size: 18px;
     width: 90%;
-    display: flex;
-    flex-direction: row;
     padding-left: 30px;
 }
 
@@ -327,11 +328,4 @@ body {
 button img {
     height: 40px;
     width: 40px;
-}
-
-.credit {
-    background-color: rgb(215, 215, 215);
-    font-size: small;
-    text-align: center;
-    margin-top: 3.8%;
 }
