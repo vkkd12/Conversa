@@ -162,14 +162,12 @@ app.post("/register", async (req, res) => {
   }
 });
 
-let ROOM = "";
 app.get("/room", middleware.isLoggedIn, (req, res) => {
   res.render("room.ejs");
 });
 
 /// Join Room
 app.post("/roomJoin", middleware.isLoggedIn, async (req, res) => {
-  ROOM = req.body.roomID;
   try {
     let roomToJoin = await Room.findById(req.body.roomID);
     if (roomToJoin.password === req.body.join_password) {
@@ -199,7 +197,6 @@ app.post("/roomCreate", middleware.isLoggedIn, async (req, res) => {
   user.roomJoin = newRoom._id;
   await user.save();
 
-  ROOM = newRoom._id;
   res.redirect("/chattings");
 });
 
@@ -281,7 +278,7 @@ io.on("connection", (socket) => {
   if (socket.id) {
     // Public and creating user
     socket.on("public", async (USERNAME) => {
-      let tempRoom = ROOM ? ROOM : "public";
+      let tempRoom = ROOMNAME ? ROOMNAME : "public";
       socket.join(tempRoom);
       let user = { id: socket.id, name: USERNAME, room: tempRoom };
       Users.push(user);
@@ -385,3 +382,4 @@ function getAllNames(id) {
   }
   return names;
 }
+
