@@ -209,7 +209,13 @@ app.get("/chattings", middleware.isLoggedIn, async (req, res) => {
   if (curr_user) {
     curr_user = await curr_user.populate("roomJoin");
     let room = curr_user.roomJoin;
-    const ROOMNAME = room.name;
+    let ROOMNAME = "";
+    if (room) {
+      ROOMNAME = room.name;
+    } else {
+      return res.redirect("/logout");
+    }
+
     res.render("../public/chat-page/chat-page.ejs", {
       curr_user,
       ROOMNAME,
