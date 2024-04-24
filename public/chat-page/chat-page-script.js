@@ -7,6 +7,15 @@ window.onload = () => {
   socket.emit("members");
 };
 
+// Copying in ClipBoard
+const copyButton = document.querySelector("#ROOM_ID i");
+if (copyButton) {
+  copyButton.addEventListener("click", () => {
+    let copyVal = ROOM_ID.substring(0, ROOM_ID.length - 1);
+    navigator.clipboard.writeText(copyVal);
+  });
+}
+
 //Leave Room
 const leaveRoom = document.querySelector("#exit");
 if (leaveRoom) {

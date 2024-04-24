@@ -146,6 +146,10 @@ body {
     align-items: center;
 }
 
+#ROOM_ID i {
+    cursor: pointer;
+}
+
 .chat-section .chatting-portion .group-menu .members .background-selector input {
     height: 30px;
     width: 30px;
