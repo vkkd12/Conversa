@@ -277,8 +277,8 @@ const io = new Server(expressServer, {
 io.on("connection", (socket) => {
   if (socket.id) {
     // Public and creating user
-    socket.on("public", async (USERNAME) => {
-      let tempRoom = ROOMNAME ? ROOMNAME : "public";
+    socket.on("public", async (USERNAME, ROOM_ID) => {
+      let tempRoom = ROOM_ID ? ROOM_ID : "public";
       socket.join(tempRoom);
       let user = { id: socket.id, name: USERNAME, room: tempRoom };
       Users.push(user);

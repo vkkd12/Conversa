@@ -1,9 +1,9 @@
 const socket = io("https://conversa-h9s7.onrender.com");
 
 const USERNAME = document.querySelector("#USERNAME").innerText;
-const ROOMNAME = document.querySelector(".room-name").innerText;
+const ROOM_ID = document.querySelector("#ROOM_ID").innerText;
 window.onload = () => {
-  socket.emit("public", USERNAME, ROOMNAME);
+  socket.emit("public", USERNAME, ROOM_ID);
   socket.emit("members");
 };
 
